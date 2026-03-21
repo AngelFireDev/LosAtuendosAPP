@@ -1,50 +1,48 @@
 package main;
 
 import modelo.*;
-import composite.Pieza;
-import dao.ClienteDAO;
-import factory.PrendaFactory;
+import dao.*;
+import negocio.*;
+
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
 
-        // Factory Method
-        System.out.println("Patron de Diseño Factory Method");
+        NegocioAlquiler negocio = new NegocioAlquiler();
 
-        Prenda vestidoDama = PrendaFactory.crearPrenda("VestidoDama");
-        Prenda trajeCaballero = PrendaFactory.crearPrenda("TrajeCaballero");
-        Prenda disfraz = PrendaFactory.crearPrenda("Disfraz");
+        Cliente cliente1 = new Cliente(1, "123456789", "Diana", "Calle 10 #5", "3001234567", "diana@correo.com");
+        negocio.registrarCliente(cliente1);
 
-        vestidoDama.mostrarInfo();
-        trajeCaballero.mostrarInfo();
-        disfraz.mostrarInfo();
+        Empleado empleado1 = new Empleado(1, "987654321", "Carlos", "Carrera 20 #15", "3109876543", "carlos@correo.com", "Administrador");
+        negocio.registrarEmpleado(empleado1);
 
-        // Composite
-        System.out.println("Patron de Diseño Composite");
+        Prenda vestido = new VestidoDama("V001", "Azul", "MarcaY", "S", 80000, true, true, 2);
+        Prenda traje = new TrajeCaballero("T001", "Negro", "MarcaX", "M", 100000, "Convencional", "Corbata");
+        negocio.registrarPrenda(vestido);
+        negocio.registrarPrenda(traje);
 
-        VestidoDama vestido = new VestidoDama();
-        vestido.agregarPieza(new Pieza("Botones"));
-        vestido.agregarPieza(new Pieza("Encaje"));
-        vestido.agregarPieza(new Pieza("Escote"));
-        vestido.agregarPieza(new Pieza("Cintura"));
-        vestido.agregarPieza(new Pieza("Decoración"));
+        List<Prenda> prendasAlquiler = new ArrayList<>();
+        prendasAlquiler.add(vestido);
+        prendasAlquiler.add(traje);
 
-        vestido.mostrarInfo();
+        negocio.registrarServicio("123456789", "987654321", prendasAlquiler, new Date());
 
-        // Singleton y DAO
-        System.out.println("Patron de Diseño Singleton");
+        ServicioAlquiler servicio = negocio.consultarServicioPorNumero(1);
+        System.out.println("Consulta por número: " + servicio);
 
-        ClienteDAO cliente = ClienteDAO.getInstancia();
-        cliente.agregarCliente(new Cliente(1, "Diana", "di.baron@ucompensar.edu.co"));
-        cliente.agregarCliente(new Cliente(2, "Oscar", "oscar@ucompensar.edu.co"));
+        List<ServicioAlquiler> serviciosCliente = negocio.consultarServiciosPorCliente("123456789");
+        System.out.println("Servicios del cliente Diana: " + serviciosCliente);
 
-        System.out.println("Clientes existentes en BD");
-        for (Cliente c : cliente.listarClientes()) {
-            System.out.println(c);
-        }
+        List<Prenda> prendasTallaS = negocio.consultarPrendasPorTalla("S");
+        System.out.println("Prendas talla S: " + prendasTallaS);
 
-        Cliente busqueda = cliente.buscarClientePorId(2);
-        System.out.println("Cliente encontrado" + busqueda);
+        Lavanderia lav = new Lavanderia();
+        lav.registrarPrenda(vestido, true); 
+        lav.registrarPrenda(traje, false);
 
+        System.out.println("Pendientes en lavandería: " + lav.visualizarPendientes());
+        System.out.println("Prendas enviadas: " + lav.enviarPrendas(1));
+        System.out.println("Pendientes después del envío: " + lav.visualizarPendientes());
     }
 }
