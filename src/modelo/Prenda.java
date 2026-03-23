@@ -21,7 +21,6 @@ public abstract class Prenda {
     public String getTalla() { return talla; }
     public double getValorAlquiler() { return valorAlquiler; }
 
-    @Override
     public String toString() {
         return "Prenda [referencia=" + referencia + ", color=" + color + ", marca=" + marca +
                ", talla=" + talla + ", valorAlquiler=" + valorAlquiler + "]";
@@ -30,4 +29,9 @@ public abstract class Prenda {
     public void mostrarInfo() {
         System.out.println(this.toString());
     }
+
+    public double getPrecio() {
+    return valorAlquiler;
+}
+
 }

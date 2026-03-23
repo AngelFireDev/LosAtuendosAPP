@@ -1,6 +1,7 @@
 package modelo;
+import observer.Observer;
 
-public class Cliente {
+public class Cliente implements Observer{
     private int id;
     private String identificacion;
     private String nombre;
@@ -31,5 +32,9 @@ public class Cliente {
                ", direccion=" + direccion + 
                ", telefono=" + telefono + 
                ", correo=" + correo + "]";
+    }
+
+     public void actualizar(String mensaje) {
+        System.out.println("Cliente notificado: " + mensaje);
     }
 }

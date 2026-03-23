@@ -6,6 +6,14 @@ import negocio.*;
 
 import java.util.*;
 
+import observer.Observer;
+import command.Command;
+import command.RegistrarServicioCommand;
+import strategy.CostoBase;
+import strategy.CostoDescuento;
+import templatemethod.AlquilerClienteVIP;
+import templatemethod.ProcesoAlquiler;
+
 public class Main {
     public static void main(String[] args) {
 
@@ -26,8 +34,29 @@ public class Main {
         prendasAlquiler.add(vestido);
         prendasAlquiler.add(traje);
 
-        negocio.registrarServicio("123456789", "987654321", prendasAlquiler, new Date());
+        // ------------------- Observer -------------------
+        negocio.agregarObservador(cliente1);
 
+        // ------------------- Command -------------------
+        Command comando = new RegistrarServicioCommand(
+            negocio, "123456789", "987654321", prendasAlquiler, new Date()
+        );
+        comando.ejecutar();
+
+        // ------------------- Strategy -------------------
+        negocio.setEstrategiaCosto(new CostoDescuento());
+        double costoConDescuento = negocio.calcularCostoServicio(prendasAlquiler);
+        System.out.println("Costo con descuento: " + costoConDescuento);
+
+        negocio.setEstrategiaCosto(new CostoBase());
+        double costoBase = negocio.calcularCostoServicio(prendasAlquiler);
+        System.out.println("Costo base: " + costoBase);
+
+        // ------------------- Template Method -------------------
+        ProcesoAlquiler procesoVIP = new AlquilerClienteVIP();
+        negocio.ejecutarProcesoAlquiler(procesoVIP);
+
+        // ------------------- Lógica original -------------------
         ServicioAlquiler servicio = negocio.consultarServicioPorNumero(1);
         System.out.println("Consulta por número: " + servicio);
 

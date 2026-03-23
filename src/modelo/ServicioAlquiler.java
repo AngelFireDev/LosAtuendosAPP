@@ -2,6 +2,8 @@ package modelo;
 
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
+import observer.Observer; 
 
 public class ServicioAlquiler {
     private int numeroServicio;
@@ -11,6 +13,8 @@ public class ServicioAlquiler {
     private Empleado empleado;
     private List<Prenda> prendas;
 
+    private List<Observer> observadores = new ArrayList<>();
+
     public ServicioAlquiler(int numeroServicio, Date fechaSolicitud, Date fechaAlquiler,
                             Cliente cliente, Empleado empleado, List<Prenda> prendas) {
         this.numeroServicio = numeroServicio;
@@ -19,10 +23,6 @@ public class ServicioAlquiler {
         this.cliente = cliente;
         this.empleado = empleado;
         this.prendas = prendas;
-    }
-
-    public int getNumeroServicio() {
-        return numeroServicio;
     }
 
     public Date getFechaSolicitud() {
@@ -45,7 +45,16 @@ public class ServicioAlquiler {
         return prendas;
     }
 
-    @Override
+    public void agregarObservador(Observer o) {
+        observadores.add(o);
+    }
+
+    public void notificarObservadores(String mensaje) {
+        for (Observer o : observadores) {
+            o.actualizar(mensaje);
+        }
+    }
+
     public String toString() {
         return "ServicioAlquiler{" +
                 "numeroServicio=" + numeroServicio +
@@ -55,4 +64,9 @@ public class ServicioAlquiler {
                 ", prendas=" + prendas +
                 '}';
     }
+
+    public int getNumeroServicio() {
+    return numeroServicio;
+}
+
 }
